@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: dev-test
+  name: maven-web-application
+  labels:
+    app: maven-web-application
+    version: latest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: maven-web-application
+      version: latest
+  template:
+    metadata:
+      name: maven-web-application
+      labels:
+        app: maven-web-application
+        version: latest
+    spec:
+      containers: 
+      - name: maven-web-application
+        image: 44.192.24.140:8082/imageversion
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+      imagePullSecrets:
+      - name: nexus-login
+---
+
+apiVserion: v1
+kind: Service
+metadata:
+  namespace: dev-test
+  name: maven-web-application
+  labels:
+    app: maven-web-application
+    version: latest 
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 32333
+  selector:
+    app: maven-web-application
+    version: latest 
